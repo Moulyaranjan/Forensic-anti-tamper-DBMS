@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0d1117;
+  color: #00ffcc;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  background: black;
+  border: 1px solid #00ffcc;
+  color: #00ffcc;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #00ffcc;
+  border: none;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #00ffaa;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+/* LOGIN */
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  border: 1px solid #00ffcc;
+  padding: 30px;
+  width: 300px;
+  text-align: center;
+}
+
+/* HERO */
+.hero {
+  display: none;
+  text-align: center;
+  padding: 60px;
+}
+
+.features {
+  margin-top: 30px;
+}
+
+.card {
+  display: inline-block;
+  padding: 15px;
+  margin: 10px;
+  border: 1px solid #00ffcc;
+  width: 220px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #00ffcc;
+}
+
+/* DASHBOARD */
+.dashboard {
+  display: none;
+  padding: 20px;
+}
+
+.main {
+  display: flex;
+  justify-content: space-around;
+}
+
+.panel {
+  width: 40%;
+  border: 1px solid #00ffcc;
+  padding: 20px;
+}
+
+.record {
+  border-bottom: 1px solid #00ffcc;
+  margin-bottom: 10px;
+}
+
+.hash {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.info {
+  background: rgba(0,255,204,0.1);
+  padding: 10px;
+  margin-bottom: 10px;
+}

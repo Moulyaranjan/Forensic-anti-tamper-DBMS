@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Forensic Anti-Tamper System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- 🔐 LOGIN -->
+<div class="login" id="loginPage">
+  <div class="box">
+    <h2>Secure Login</h2>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <div id="msg"></div>
+  </div>
+</div>
+
+<!-- 🚀 HERO -->
+<div class="hero" id="heroPage">
+
+  <h1>Anti-Tamper Forensic Chain</h1>
+
+  <div class="features">
+
+    <div class="card" onclick="openPage('blockchain.html')">
+      Blockchain Security
+    </div>
+
+    <div class="card" onclick="openPage('warrant.html')">
+      Warrant Access
+    </div>
+
+    <div class="card" onclick="openPage('intrusion.html')">
+      Intrusion Detection
+    </div>
+
+  </div>
+
+  <button onclick="enterSystem()">Enter System</button>
+  <button onclick="logout()">Logout</button>
+
+</div>
+
+<!-- 🧾 DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+  <h2>Forensic Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+
+  <div class="main">
+
+    <div class="panel">
+      <div class="info">
+        Enter valid case + warrant to access evidence
+      </div>
+
+      <input id="user" placeholder="User Name">
+      <input id="case_id" placeholder="Case ID">
+      <input id="warrant_id" placeholder="Warrant ID">
+
+      <button onclick="viewEvidence()">View Evidence</button>
+
+      <div class="info">
+        Add new evidence (auto hashed + linked)
+      </div>
+
+      <input id="case_add" placeholder="Case ID">
+      <input id="data_add" placeholder="Evidence Data">
+      <input id="warrant_add" placeholder="Warrant ID">
+
+      <button onclick="addEvidence()">Add Evidence</button>
+
+      <div id="status"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Evidence Chain</h3>
+      <div id="result"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

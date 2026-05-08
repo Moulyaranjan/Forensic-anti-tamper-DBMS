@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Evidence Access</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#050816;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:70%;
+    background:#101937;
+    padding:40px;
+    border-radius:20px;
+    border:1px solid #14f1d966;
+}
+
+h1{
+    color:#14f1d9;
+    margin-bottom:30px;
+    text-align:center;
+}
+
+.card{
+    background:#18244d;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+
+.card h2{
+    color:#14f1d9;
+    margin-bottom:15px;
+}
+
+.hash{
+    color:#14f1d9;
+    word-break:break-all;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#14f1d9;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔐 Authorized Evidence Access</h1>
+
+    <div class="card">
+        <h2>Case ID</h2>
+        <p id="caseId"></p>
+    </div>
+
+    <div class="card">
+        <h2>Evidence Data</h2>
+        <p id="evidence"></p>
+    </div>
+
+    <div class="card">
+        <h2>Warrant ID</h2>
+        <p id="warrant"></p>
+    </div>
+
+    <div class="card">
+        <h2>Blockchain Hash</h2>
+        <p class="hash" id="hash"></p>
+    </div>
+
+    <button onclick="goBack()">
+        ⬅ Back to Dashboard
+    </button>
+
+</div>
+
+<script>
+
+const evidenceList =
+    JSON.parse(localStorage.getItem("authorizedEvidence"));
+
+if(!evidenceList || evidenceList.length === 0){
+
+    window.location.href = "dashboard.html";
+}
+
+const container =
+    document.querySelector(".container");
+
+let evidenceHTML = `
+    <h1>🔐 Authorized Evidence Access</h1>
+`;
+
+evidenceList.forEach((block,index)=>{
+
+    evidenceHTML += `
+
+    <div class="card">
+
+        <h2>Evidence #${index + 1}</h2>
+
+        <p>
+            <b>Case ID:</b>
+            ${block.caseId}
+        </p>
+
+      <p>
+    <b>Evidence:</b>
+    ${block.evidence}
+</p>
+
+<p>
+    <b>Description:</b>
+    ${block.description}
+</p>
+
+<p>
+    <b>Officer:</b>
+    ${block.officer}
+</p>
+
+<p>
+    <b>Timestamp:</b>
+    ${block.timestamp}
+</p>
+
+<p>
+    <b>Warrant ID:</b>
+    ${block.warrant}
+</p>
+
+        <p class="hash">
+
+            <b>Previous Hash:</b><br>
+
+            ${block.previousHash}
+        </p>
+
+        <p class="hash">
+
+            <b>Current Hash:</b><br>
+
+            ${block.currentHash}
+        </p>
+
+    </div>
+    `;
+});
+
+evidenceHTML += `
+
+<button onclick="goBack()">
+    ⬅ Back to Dashboard
+</button>
+`;
+
+container.innerHTML = evidenceHTML;
+
+function goBack(){
+
+    window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

@@ -1,27 +1,632 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Add Evidence</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forensic Dashboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#050816;
+    color:white;
+}
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:#081024;
+    border-right:2px solid #14f1d9;
+    padding:30px 20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+.logo{
+    color:#14f1d9;
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:50px;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.menu button{
+    background:none;
+    border:none;
+    color:white;
+    text-align:left;
+    font-size:20px;
+    padding:15px;
+    border-radius:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.menu button:hover{
+    background:#132347;
+}
+
+.logout{
+    background:#ff4d6d;
+    border:none;
+    padding:15px;
+    color:white;
+    font-size:18px;
+    border-radius:12px;
+    cursor:pointer;
+    margin-top:40px;
+}
+
+/* MAIN CONTENT */
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.title{
+    font-size:55px;
+    color:#14f1d9;
+    margin-bottom:30px;
+}
+
+/* CARDS */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+    margin-bottom:40px;
+}
+
+.card{
+    background:#101937;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid #14f1d94f;
+}
+
+.card h3{
+    color:#bfc7d5;
+    margin-bottom:20px;
+    font-size:24px;
+}
+
+.card p{
+    font-size:50px;
+    font-weight:bold;
+    color:#14f1d9;
+}
+
+/* FORMS */
+
+.form-section{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-bottom:40px;
+}
+
+.form-box{
+    background:#101937;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid #14f1d94f;
+}
+
+.form-box h2{
+    color:#14f1d9;
+    margin-bottom:25px;
+}
+
+.form-box input{
+    width:100%;
+    padding:15px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:10px;
+    background:#1a264d;
+    color:white;
+    font-size:16px;
+}
+
+.form-box button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#14f1d9;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* BLOCKCHAIN */
+
+.chain-box{
+    background:#101937;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid #14f1d94f;
+    margin-bottom:40px;
+}
+
+.chain-box h2{
+    color:#14f1d9;
+    margin-bottom:25px;
+}
+
+.block{
+    background:#18244d;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    border-left:5px solid #14f1d9;
+}
+
+.block h3{
+    margin-bottom:15px;
+}
+
+.hash{
+    color:#14f1d9;
+    word-break:break-all;
+}
+
+/* TABLE */
+
+.logs{
+    background:#101937;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid #14f1d94f;
+}
+
+.logs h2{
+    color:#14f1d9;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#113447;
+    padding:15px;
+    color:#14f1d9;
+}
+
+td{
+    padding:15px;
+    border-bottom:1px solid #2d3963;
+}
+
+.success{
+    color:#00ff88;
+    font-weight:bold;
+}
+
+.error{
+    color:#ff4d6d;
+    font-weight:bold;
+}
+
+.verify-result{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.form-box textarea{
+
+    width:100%;
+    height:120px;
+    padding:15px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:10px;
+    background:#1a264d;
+    color:white;
+    resize:none;
+    font-size:16px;
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="container">
-  <h1>➕ Add Evidence</h1>
 
-  <div class="card">
-    <input id="case" placeholder="📁 Case ID">
-    <input id="data" placeholder="🧾 Evidence Data">
-    <input id="warrant" placeholder="📜 Warrant ID">
+    <!-- SIDEBAR -->
 
-    <button onclick="addEvidence()">Add Evidence</button>
-  </div>
+    <div class="sidebar">
 
-  <div id="status"></div>
+        <div>
 
-  <a class="link-btn" href="index.html">← Back</a>
+            <div class="logo">
+                🔐 FATS
+            </div>
+
+            <div class="menu">
+
+                <button onclick="location.href='dashboard.html'">
+                    🏠 Dashboard
+                </button>
+
+                <button onclick="location.href='blockchain.html'">
+                    ⛓ Blockchain
+                </button>
+
+                <button onclick="location.href='intrusion.html'">
+                    🚨 Intrusion Logs
+                </button>
+
+                <button onclick="location.href='warrant.html'">
+                    📜 Warrant Access
+                </button>
+
+            </div>
+
+        </div>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+    <!-- MAIN -->
+
+    <div class="main">
+
+        <h1 class="title">
+            Forensic Anti-Tamper Dashboard
+        </h1>
+
+        <!-- STATS -->
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>Total Cases</h3>
+                <p>128</p>
+            </div>
+
+            <div class="card">
+                <h3>Evidence Records</h3>
+                <p>542</p>
+            </div>
+
+            <div class="card">
+                <h3>Intrusion Attempts</h3>
+                <p style="color:#ff4d6d;">7</p>
+            </div>
+
+        </div>
+
+        <!-- FORMS -->
+
+        <div class="form-section">
+
+            <!-- ADD EVIDENCE -->
+
+            <div class="form-box">
+
+                <h2>📁 Add Evidence</h2>
+
+                <input type="text" id="caseId" placeholder="Enter Case ID" autocomplete="off">
+
+                <input type="text" id="evidenceData" placeholder="Enter Evidence Data" autocomplete="off">
+                <textarea id="description"  placeholder="Enter Evidence Description"></textarea>
+                <input type="text" id="officerName" placeholder="Officer Name" autocomplete="off">
+
+
+                <input type="text" id="warrantId" placeholder="Enter Warrant ID" autocomplete="off">
+
+                <button onclick="addEvidence()">
+                    Add Evidence
+                </button>
+
+            </div>
+
+            <!-- VERIFY -->
+
+            <div class="form-box">
+
+                <h2>🔐 Verify Access</h2>
+
+                <input type="text" id="verifyCase" placeholder="Enter Case ID" autocomplete="off">
+
+                <input type="text" id="verifyWarrant" placeholder="Enter Warrant ID" autocomplete="off">
+
+                <button onclick="verifyAccess()">
+                    Verify Warrant
+                </button>
+
+                <div id="verifyMessage" class="verify-result"></div>
+
+            </div>
+
+        </div>
+
+        <!-- BLOCKCHAIN -->
+
+        <div class="chain-box">
+
+            <h2>⛓ Evidence Blockchain Chain</h2>
+
+            <div id="chainContainer"></div>
+
+        </div>
+
+        <!-- LOGS -->
+
+        <div class="logs">
+
+            <h2>📋 Recent Evidence Logs</h2>
+
+            <table>
+
+                <tr>
+                    <th>Case ID</th>
+                    <th>Evidence</th>
+                    <th>Status</th>
+                    <th>Hash</th>
+                </tr>
+
+                <tr>
+                    <td>C102</td>
+                    <td>Mobile Device</td>
+                    <td class="success">Verified</td>
+                    <td>0xA51BC...</td>
+                </tr>
+
+                <tr>
+                    <td>C245</td>
+                    <td>Hard Disk</td>
+                    <td class="error">Flagged</td>
+                    <td>0x91DFE...</td>
+                </tr>
+
+                <tr>
+                    <td>C311</td>
+                    <td>USB Evidence</td>
+                    <td class="success">Verified</td>
+                    <td>0x77ABC...</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+
 </div>
+<script>
 
-<script src="script.js"></script>
+if(localStorage.getItem("loggedIn") !== "true"){
+
+    window.location.href = "index.html";
+}
+
+let blockchain =
+    JSON.parse(localStorage.getItem("blockchain")) || [];
+
+function generateHash(data){
+
+    return btoa(data + Date.now()).substring(0,30);
+}
+
+function addEvidence(){
+
+    const caseId =
+        document.getElementById("caseId").value;
+
+    const evidence =
+        document.getElementById("evidenceData").value;
+
+    const description =
+        document.getElementById("description").value;
+
+    const officer =
+        document.getElementById("officerName").value;
+
+    const warrant =
+        document.getElementById("warrantId").value;
+
+    if(
+        caseId === "" ||
+        evidence === "" ||
+        description === "" ||
+        officer === "" ||
+        warrant === ""
+    ){
+
+        alert("Please fill all fields");
+        return;
+    }
+
+    const timestamp =
+        new Date().toLocaleString();
+
+    let previousHash =
+        blockchain.length === 0
+        ? "000000000"
+        : blockchain[blockchain.length - 1].currentHash;
+
+    let currentHash =
+        generateHash(
+            caseId +
+            evidence +
+            description +
+            officer +
+            warrant +
+            timestamp
+        );
+
+    let block = {
+
+        caseId,
+        evidence,
+        description,
+        officer,
+        warrant,
+        timestamp,
+        previousHash,
+        currentHash
+    };
+
+    blockchain.push(block);
+
+    localStorage.setItem(
+        "blockchain",
+        JSON.stringify(blockchain)
+    );
+
+    renderBlockchain();
+
+    alert("✅ Evidence Added Successfully");
+
+    document.getElementById("caseId").value = "";
+
+    document.getElementById("evidenceData").value = "";
+
+    document.getElementById("description").value = "";
+
+    document.getElementById("officerName").value = "";
+
+    document.getElementById("warrantId").value = "";
+}
+
+function renderBlockchain(){
+
+    const container =
+        document.getElementById("chainContainer");
+
+    container.innerHTML = "";
+
+    blockchain.forEach((block,index)=>{
+
+        container.innerHTML += `
+
+        <div class="block">
+
+            <h3>Block #${index + 1}</h3>
+
+            <p>
+                <b>Case ID:</b>
+                ${block.caseId}
+            </p>
+            <p>
+    <b>Description:</b>
+    ${block.description}
+</p>
+
+<p>
+    <b>Officer:</b>
+    ${block.officer}
+</p>
+
+<p>
+    <b>Timestamp:</b>
+    ${block.timestamp}
+</p>
+
+            <p>
+                <b>Evidence:</b>
+                ${block.evidence}
+            </p>
+
+            <p>
+                <b>Warrant ID:</b>
+                ${block.warrant}
+            </p>
+
+            <p class="hash">
+
+                <b>Previous Hash:</b><br>
+
+                ${block.previousHash}
+            </p>
+
+            <p class="hash">
+
+                <b>Current Hash:</b><br>
+
+                ${block.currentHash}
+            </p>
+
+        </div>
+
+        `;
+    });
+
+}
+function verifyAccess(){
+
+    const caseId =
+        document.getElementById("verifyCase").value;
+
+    const warrantId =
+        document.getElementById("verifyWarrant").value;
+
+    const foundEvidence = blockchain.filter(
+        block =>
+            block.caseId === caseId &&
+            block.warrant === warrantId
+    );
+
+    if(foundEvidence.length > 0){
+
+        localStorage.setItem(
+            "authorizedEvidence",
+            JSON.stringify(foundEvidence)
+        );
+
+        window.location.href = "evidence.html";
+    }
+
+    else{
+
+        alert("❌ Invalid Warrant or Case ID");
+    }
+}
+
+renderBlockchain();
+
+function logout(){
+
+    localStorage.removeItem("loggedIn");
+
+    localStorage.removeItem("role");
+
+    localStorage.removeItem("username");
+
+    window.location.href = "index.html";
+}
+
+</script>
 </body>
 </html>

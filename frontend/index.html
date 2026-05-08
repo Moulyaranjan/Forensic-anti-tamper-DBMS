@@ -1,90 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Forensic Anti-Tamper System</title>
-  <link rel="stylesheet" href="style.css">
+    <title>Forensic Anti-Tamper System</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial;
+        }
+
+        body{
+
+            background:#020617;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            color:white;
+        }
+
+        .login-box{
+
+            width:420px;
+            background:#0f172a;
+            padding:40px;
+            border-radius:20px;
+            border:1px solid #00ffe0;
+            box-shadow:0 0 40px rgba(0,255,224,0.2);
+            text-align:center;
+        }
+
+        .logo{
+
+            font-size:65px;
+            margin-bottom:10px;
+        }
+
+        h1{
+
+            color:#19f5e5;
+            font-size:55px;
+            margin-bottom:10px;
+        }
+
+        p{
+
+            color:#cbd5e1;
+            margin-bottom:35px;
+        }
+
+        input{
+
+            width:100%;
+            padding:16px;
+            margin-bottom:18px;
+            border:none;
+            outline:none;
+            border-radius:10px;
+            background:#1e293b;
+            color:white;
+            font-size:16px;
+        }
+
+        button{
+
+            width:100%;
+            padding:16px;
+            border:none;
+            border-radius:10px;
+            background:#22e3d6;
+            color:black;
+            font-size:20px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        button:hover{
+
+            background:#0ff;
+            transform:scale(1.02);
+        }
+
+        .error{
+
+            color:#ff5e7a;
+            margin-top:15px;
+        }
+
+    </style>
 </head>
 
 <body>
 
-<!-- 🔐 LOGIN -->
-<div class="login" id="loginPage">
-  <div class="box">
-    <h2>Secure Login</h2>
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <div id="msg"></div>
-  </div>
-</div>
+<div class="login-box">
 
-<!-- 🚀 HERO -->
-<div class="hero" id="heroPage">
+    <div class="logo">🔐</div>
 
-  <h1>Anti-Tamper Forensic Chain</h1>
+    <h1>FATS</h1>
 
-  <div class="features">
+    <p>Forensic Anti-Tamper Database System</p>
 
-    <div class="card" onclick="openPage('blockchain.html')">
-      Blockchain Security
-    </div>
+    <input type="text"
+           id="username"
+           placeholder="Enter Username"
+           autocomplete="off">
 
-    <div class="card" onclick="openPage('warrant.html')">
-      Warrant Access
-    </div>
+    <input type="password"
+           id="password"
+           placeholder="Enter Password"
+           autocomplete="new-password">
 
-    <div class="card" onclick="openPage('intrusion.html')">
-      Intrusion Detection
-    </div>
+    <button onclick="login()">
+        Secure Login
+    </button>
 
-  </div>
-
-  <button onclick="enterSystem()">Enter System</button>
-  <button onclick="logout()">Logout</button>
+    <div class="error" id="error"></div>
 
 </div>
 
-<!-- 🧾 DASHBOARD -->
-<div class="dashboard" id="dashboard">
+<script>
 
-  <h2>Forensic Dashboard</h2>
-  <button onclick="logout()">Logout</button>
+function login(){
 
-  <div class="main">
+    const username =
+        document.getElementById("username").value;
 
-    <div class="panel">
-      <div class="info">
-        Enter valid case + warrant to access evidence
-      </div>
+    const password =
+        document.getElementById("password").value;
 
-      <input id="user" placeholder="User Name">
-      <input id="case_id" placeholder="Case ID">
-      <input id="warrant_id" placeholder="Warrant ID">
+    const users = [
 
-      <button onclick="viewEvidence()">View Evidence</button>
+        {
+            username:"chief_forensic",
+            password:"CF2026",
+            role:"admin"
+        },
 
-      <div class="info">
-        Add new evidence (auto hashed + linked)
-      </div>
+        {
+            username:"officer_01",
+            password:"OFC101",
+            role:"employee"
+        },
 
-      <input id="case_add" placeholder="Case ID">
-      <input id="data_add" placeholder="Evidence Data">
-      <input id="warrant_add" placeholder="Warrant ID">
+        {
+            username:"officer_02",
+            password:"OFC102",
+            role:"employee"
+        }
+    ];
 
-      <button onclick="addEvidence()">Add Evidence</button>
+    const validUser = users.find(user =>
+        user.username === username &&
+        user.password === password
+    );
 
-      <div id="status"></div>
-    </div>
+    if(validUser){
 
-    <div class="panel">
-      <h3>Evidence Chain</h3>
-      <div id="result"></div>
-    </div>
+        localStorage.setItem("loggedIn","true");
 
-  </div>
-</div>
+        localStorage.setItem(
+            "role",
+            validUser.role
+        );
 
-<script src="script.js"></script>
+        localStorage.setItem(
+            "username",
+            validUser.username
+        );
+
+        window.location.href =
+            "dashboard.html";
+    }
+
+    else{
+
+        document.getElementById("error").innerHTML =
+            "Invalid Username or Password";
+    }
+}
+
+</script>
 
 </body>
 </html>

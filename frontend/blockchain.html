@@ -2,42 +2,121 @@
 <html>
 <head>
   <title>Blockchain Security</title>
+
   <style>
-    body {
-      background: #0d1117;
-      color: #00ffcc;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
+
+    body{
+      background:#050816;
+      color:#00ffe0;
+      font-family:Segoe UI,sans-serif;
+      margin:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
     }
-    button {
-      padding: 10px 20px;
-      background: #00ffcc;
-      border: none;
-      cursor: pointer;
+
+    .container{
+      width:700px;
+      background:#11182f;
+      padding:40px;
+      border-radius:20px;
+      border:1px solid #00ffe044;
+      box-shadow:0 0 25px #00ffe022;
+      text-align:center;
     }
+
+    h1{
+      margin-bottom:25px;
+      font-size:42px;
+    }
+
+    p{
+      font-size:18px;
+      line-height:1.8;
+      color:#d6d6d6;
+    }
+
+    h3{
+      margin-top:30px;
+      color:#00ffe0;
+      font-size:28px;
+    }
+
+    button{
+      margin-top:30px;
+      padding:14px 30px;
+      background:#00ffe0;
+      color:black;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      background:#00c8b0;
+      transform:scale(1.05);
+    }
+
+    .chain-box{
+      margin-top:25px;
+      padding:18px;
+      background:#00ffe011;
+      border:1px solid #00ffe044;
+      border-radius:10px;
+      color:#00ffe0;
+      font-size:15px;
+      word-break:break-all;
+    }
+
   </style>
+
 </head>
+
 <body>
 
-<h1>Blockchain Inspired Security</h1>
+<div class="container">
 
-<p>
-Each evidence is stored as a cryptographic hash and linked with the previous record.
-If any record is modified, the entire chain breaks, ensuring tamper detection.
-</p>
+  <h1>⛓ Blockchain Inspired Security</h1>
 
-<h3>Why it matters?</h3>
-<p>
-This ensures integrity of digital evidence and prevents unauthorized modifications.
-</p>
+  <p>
+    Every evidence record is secured using cryptographic hashing and linked with the previous record.
+    Any unauthorized modification immediately breaks the chain and exposes tampering.
+  </p>
 
-<button onclick="goBack()">⬅ Back</button>
+  <h3>🔐 Why It Matters</h3>
+
+  <p>
+    The blockchain-inspired structure ensures:
+    <br><br>
+    ✔ Evidence integrity
+    <br>
+    ✔ Tamper detection
+    <br>
+    ✔ Secure forensic storage
+    <br>
+    ✔ Transparent audit trail
+  </p>
+
+  <div class="chain-box">
+    HASH: 0xA51BC91DFE77ABC4421...
+  </div>
+
+  <button onclick="goBack()">
+    ⬅ Back to Dashboard
+  </button>
+
+</div>
 
 <script>
-function goBack() {
-  window.location.href = "index.html";
+
+function goBack(){
+  window.location.href = "dashboard.html";
 }
+
 </script>
 
 </body>

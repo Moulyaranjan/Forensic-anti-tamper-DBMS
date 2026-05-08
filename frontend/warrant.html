@@ -2,41 +2,106 @@
 <html>
 <head>
   <title>Warrant Access</title>
+
   <style>
-    body {
-      background: #0d1117;
-      color: #00ffcc;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
+
+    body{
+      background:#050816;
+      color:#00ffe0;
+      font-family:Segoe UI,sans-serif;
+      margin:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
     }
-    button {
-      padding: 10px;
-      background: #00ffcc;
-      border: none;
+
+    .container{
+      width:700px;
+      background:#11182f;
+      padding:40px;
+      border-radius:20px;
+      border:1px solid #00ffe044;
+      box-shadow:0 0 25px #00ffe022;
+      text-align:center;
     }
+
+    h1{
+      margin-bottom:25px;
+      font-size:42px;
+    }
+
+    p{
+      font-size:18px;
+      line-height:1.8;
+      color:#d6d6d6;
+    }
+
+    h3{
+      margin-top:30px;
+      color:#00ffe0;
+      font-size:28px;
+    }
+
+    button{
+      margin-top:30px;
+      padding:14px 30px;
+      background:#00ffe0;
+      color:black;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      background:#00c8b0;
+      transform:scale(1.05);
+    }
+
   </style>
+
 </head>
+
 <body>
 
-<h1>Warrant Based Access</h1>
+  <div class="container">
 
-<p>
-Access to evidence is only allowed when a valid warrant is provided.
-This ensures legal compliance and controlled access.
-</p>
+    <h1>📜 Warrant Based Access</h1>
 
-<h3>Security Feature</h3>
-<p>
-The system checks case ID, warrant ID, and expiry before granting access.
-</p>
+    <p>
+      Access to evidence is only allowed when a valid warrant is provided.
+      This ensures legal compliance and controlled access to sensitive forensic data.
+    </p>
 
-<button onclick="goBack()">⬅ Back</button>
+    <h3>🔒 Security Feature</h3>
+
+    <p>
+      The system verifies:
+      <br><br>
+      ✔ Case ID
+      <br>
+      ✔ Warrant ID
+      <br>
+      ✔ Expiry validation
+      <br><br>
+      before granting access to evidence records.
+    </p>
+
+    <button onclick="goBack()">
+      ⬅ Back to Dashboard
+    </button>
+
+  </div>
 
 <script>
-function goBack() {
-  window.location.href = "index.html";
+
+function goBack(){
+  window.location.href = "dashboard.html";
 }
+
 </script>
 
 </body>

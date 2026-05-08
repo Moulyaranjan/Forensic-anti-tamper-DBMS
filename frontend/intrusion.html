@@ -2,41 +2,119 @@
 <html>
 <head>
   <title>Intrusion Detection</title>
+
   <style>
-    body {
-      background: #0d1117;
-      color: #00ffcc;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
+
+    body{
+      background:#050816;
+      color:#00ffe0;
+      font-family:Segoe UI,sans-serif;
+      margin:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
     }
-    button {
-      padding: 10px;
-      background: #00ffcc;
-      border: none;
+
+    .container{
+      width:700px;
+      background:#11182f;
+      padding:40px;
+      border-radius:20px;
+      border:1px solid #00ffe044;
+      box-shadow:0 0 25px #00ffe022;
+      text-align:center;
     }
+
+    h1{
+      margin-bottom:25px;
+      font-size:42px;
+      color:#ff4d4d;
+    }
+
+    p{
+      font-size:18px;
+      line-height:1.8;
+      color:#d6d6d6;
+    }
+
+    h3{
+      margin-top:30px;
+      color:#00ffe0;
+      font-size:28px;
+    }
+
+    button{
+      margin-top:30px;
+      padding:14px 30px;
+      background:#00ffe0;
+      color:black;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    button:hover{
+      background:#00c8b0;
+      transform:scale(1.05);
+    }
+
+    .alert-box{
+      margin-top:25px;
+      padding:15px;
+      background:#ff000022;
+      border:1px solid #ff4d4d;
+      border-radius:10px;
+      color:#ff8080;
+      font-weight:bold;
+    }
+
   </style>
+
 </head>
+
 <body>
 
-<h1>🚨 Intrusion Detection</h1>
+<div class="container">
 
-<p>
-Unauthorized access attempts are logged and flagged instantly.
-This helps detect misuse and improves accountability.
-</p>
+  <h1>🚨 Intrusion Detection</h1>
 
-<h3>How it works?</h3>
-<p>
-Each failed access is recorded in logs with timestamp and user details.
-</p>
+  <p>
+    Unauthorized access attempts are instantly monitored and flagged.
+    This protects sensitive forensic evidence from misuse and tampering.
+  </p>
 
-<button onclick="goBack()">⬅ Back</button>
+  <h3>🛡 How It Works</h3>
+
+  <p>
+    Every failed login or suspicious access request is:
+    <br><br>
+    ✔ Logged with timestamp
+    <br>
+    ✔ Linked to user activity
+    <br>
+    ✔ Sent for administrator review
+  </p>
+
+  <div class="alert-box">
+    ALERT: 7 suspicious activities detected today.
+  </div>
+
+  <button onclick="goBack()">
+    ⬅ Back to Dashboard
+  </button>
+
+</div>
 
 <script>
-function goBack() {
-  window.location.href = "index.html";
+
+function goBack(){
+  window.location.href = "dashboard.html";
 }
+
 </script>
 
 </body>

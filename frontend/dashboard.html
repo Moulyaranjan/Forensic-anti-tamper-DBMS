@@ -340,7 +340,7 @@ td{
 
                 <input type="text" id="evidenceData" placeholder="Enter Evidence Data" autocomplete="off">
                 <textarea id="description"  placeholder="Enter Evidence Description"></textarea>
-                <input type="text" id="officerName" placeholder="Officer Name" autocomplete="off">
+                <input type="text" id="officerName" readonly>
 
 
                 <input type="text" id="warrantId" placeholder="Enter Warrant ID" autocomplete="off">
@@ -371,57 +371,8 @@ td{
 
         </div>
 
-        <!-- BLOCKCHAIN -->
-
-        <div class="chain-box">
-
-            <h2>⛓ Evidence Blockchain Chain</h2>
-
-            <div id="chainContainer"></div>
-
-        </div>
-
-        <!-- LOGS -->
-
-        <div class="logs">
-
-            <h2>📋 Recent Evidence Logs</h2>
-
-            <table>
-
-                <tr>
-                    <th>Case ID</th>
-                    <th>Evidence</th>
-                    <th>Status</th>
-                    <th>Hash</th>
-                </tr>
-
-                <tr>
-                    <td>C102</td>
-                    <td>Mobile Device</td>
-                    <td class="success">Verified</td>
-                    <td>0xA51BC...</td>
-                </tr>
-
-                <tr>
-                    <td>C245</td>
-                    <td>Hard Disk</td>
-                    <td class="error">Flagged</td>
-                    <td>0x91DFE...</td>
-                </tr>
-
-                <tr>
-                    <td>C311</td>
-                    <td>USB Evidence</td>
-                    <td class="success">Verified</td>
-                    <td>0x77ABC...</td>
-                </tr>
-
-            </table>
-
-        </div>
-
-    </div>
+     
+       
 
 </div>
 <script>
@@ -433,6 +384,9 @@ if(localStorage.getItem("loggedIn") !== "true"){
 
 let blockchain =
     JSON.parse(localStorage.getItem("blockchain")) || [];
+
+document.getElementById("officerName").value =
+    localStorage.getItem("username");
 
 function generateHash(data){
 
@@ -485,18 +439,17 @@ function addEvidence(){
             warrant +
             timestamp
         );
-
-    let block = {
-
-        caseId,
-        evidence,
-        description,
-        officer,
-        warrant,
-        timestamp,
-        previousHash,
-        currentHash
-    };
+let block = {
+    caseId,
+    evidence,
+    description,
+    officer,
+    warrant,
+    timestamp,
+    assignedOfficer: officer,
+    previousHash,
+    currentHash
+};
 
     blockchain.push(block);
 
@@ -505,7 +458,7 @@ function addEvidence(){
         JSON.stringify(blockchain)
     );
 
-    renderBlockchain();
+    
 
     alert("✅ Evidence Added Successfully");
 
@@ -520,70 +473,7 @@ function addEvidence(){
     document.getElementById("warrantId").value = "";
 }
 
-function renderBlockchain(){
 
-    const container =
-        document.getElementById("chainContainer");
-
-    container.innerHTML = "";
-
-    blockchain.forEach((block,index)=>{
-
-        container.innerHTML += `
-
-        <div class="block">
-
-            <h3>Block #${index + 1}</h3>
-
-            <p>
-                <b>Case ID:</b>
-                ${block.caseId}
-            </p>
-            <p>
-    <b>Description:</b>
-    ${block.description}
-</p>
-
-<p>
-    <b>Officer:</b>
-    ${block.officer}
-</p>
-
-<p>
-    <b>Timestamp:</b>
-    ${block.timestamp}
-</p>
-
-            <p>
-                <b>Evidence:</b>
-                ${block.evidence}
-            </p>
-
-            <p>
-                <b>Warrant ID:</b>
-                ${block.warrant}
-            </p>
-
-            <p class="hash">
-
-                <b>Previous Hash:</b><br>
-
-                ${block.previousHash}
-            </p>
-
-            <p class="hash">
-
-                <b>Current Hash:</b><br>
-
-                ${block.currentHash}
-            </p>
-
-        </div>
-
-        `;
-    });
-
-}
 function verifyAccess(){
 
     const caseId =
@@ -592,13 +482,27 @@ function verifyAccess(){
     const warrantId =
         document.getElementById("verifyWarrant").value;
 
+    const currentUser =
+        localStorage.getItem("username");
+
+    const currentRole =
+        localStorage.getItem("role");
+
     const foundEvidence = blockchain.filter(
         block =>
             block.caseId === caseId &&
             block.warrant === warrantId
     );
 
-    if(foundEvidence.length > 0){
+    if(foundEvidence.length === 0){
+
+        alert("❌ Invalid Warrant or Case ID");
+        return;
+    }
+
+    /* ADMIN CAN ACCESS EVERYTHING */
+
+    if(currentRole === "admin"){
 
         localStorage.setItem(
             "authorizedEvidence",
@@ -606,15 +510,31 @@ function verifyAccess(){
         );
 
         window.location.href = "evidence.html";
+
+        return;
     }
 
-    else{
+    /* OFFICER ACCESS CHECK */
 
-        alert("❌ Invalid Warrant or Case ID");
+    const assignedCase = foundEvidence.some(
+        block =>
+            block.assignedOfficer === currentUser
+    );
+
+    if(!assignedCase){
+
+        alert("⛔ Access Denied: Not Assigned Officer");
+        return;
     }
+
+    localStorage.setItem(
+        "authorizedEvidence",
+        JSON.stringify(foundEvidence)
+    );
+
+    window.location.href = "evidence.html";
 }
 
-renderBlockchain();
 
 function logout(){
 

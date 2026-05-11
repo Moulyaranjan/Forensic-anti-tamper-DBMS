@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -138,7 +139,9 @@ body{
     margin-bottom:25px;
 }
 
-.form-box input{
+.form-box input,
+.form-box textarea{
+
     width:100%;
     padding:15px;
     margin-bottom:15px;
@@ -147,6 +150,11 @@ body{
     background:#1a264d;
     color:white;
     font-size:16px;
+}
+
+.form-box textarea{
+    height:120px;
+    resize:none;
 }
 
 .form-box button{
@@ -158,6 +166,12 @@ body{
     font-size:18px;
     font-weight:bold;
     cursor:pointer;
+}
+
+.verify-result{
+    margin-top:15px;
+    font-size:18px;
+    font-weight:bold;
 }
 
 /* BLOCKCHAIN */
@@ -232,26 +246,6 @@ td{
     font-weight:bold;
 }
 
-.verify-result{
-    margin-top:15px;
-    font-size:18px;
-    font-weight:bold;
-}
-
-.form-box textarea{
-
-    width:100%;
-    height:120px;
-    padding:15px;
-    margin-bottom:15px;
-    border:none;
-    border-radius:10px;
-    background:#1a264d;
-    color:white;
-    resize:none;
-    font-size:16px;
-}
-
 </style>
 </head>
 
@@ -311,17 +305,20 @@ td{
 
             <div class="card">
                 <h3>Total Cases</h3>
-                <p>128</p>
+                <p id="totalCases">0</p>
             </div>
 
             <div class="card">
                 <h3>Evidence Records</h3>
-                <p>542</p>
+                <p id="totalEvidence">0</p>
             </div>
 
             <div class="card">
                 <h3>Intrusion Attempts</h3>
-                <p style="color:#ff4d6d;">7</p>
+                <p id="intrusionCount"
+                   style="color:#ff4d6d;">
+                   0
+                </p>
             </div>
 
         </div>
@@ -336,14 +333,24 @@ td{
 
                 <h2>Add Evidence</h2>
 
-                <input type="text" id="caseId" placeholder="Enter Case ID" autocomplete="off">
+                <input type="text"
+                       id="caseId"
+                       placeholder="Enter Case ID">
 
-                <input type="text" id="evidenceData" placeholder="Enter Evidence Data" autocomplete="off">
-                <textarea id="description"  placeholder="Enter Evidence Description"></textarea>
-                <input type="text" id="officerName" readonly>
+                <input type="text"
+                       id="evidenceData"
+                       placeholder="Enter Evidence Data">
 
+                <textarea id="description"
+                          placeholder="Enter Evidence Description"></textarea>
 
-                <input type="text" id="warrantId" placeholder="Enter Warrant ID" autocomplete="off">
+                <input type="text"
+                       id="officerName"
+                       readonly>
+
+                <input type="text"
+                       id="warrantId"
+                       placeholder="Enter Warrant ID">
 
                 <button onclick="addEvidence()">
                     Add Evidence
@@ -357,24 +364,61 @@ td{
 
                 <h2>Verify Access</h2>
 
-                <input type="text" id="verifyCase" placeholder="Enter Case ID" autocomplete="off">
+                <input type="text"
+                       id="verifyCase"
+                       placeholder="Enter Case ID">
 
-                <input type="text" id="verifyWarrant" placeholder="Enter Warrant ID" autocomplete="off">
+                <input type="text"
+                       id="verifyWarrant"
+                       placeholder="Enter Warrant ID">
 
                 <button onclick="verifyAccess()">
                     Verify Warrant
                 </button>
 
-                <div id="verifyMessage" class="verify-result"></div>
+                <div id="verifyMessage"
+                     class="verify-result"></div>
 
             </div>
 
         </div>
 
-     
-       
+        <!-- RECENT LOGS -->
+
+        <div class="logs">
+
+            <h2>Recent Evidence Logs</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Case ID</th>
+
+                        <th>Evidence</th>
+
+                        <th>Status</th>
+
+                        <th>Hash</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="logsTable">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
+
 <script>
 
 if(localStorage.getItem("loggedIn") !== "true"){
@@ -388,10 +432,14 @@ let blockchain =
 document.getElementById("officerName").value =
     localStorage.getItem("username");
 
+/* HASH */
+
 function generateHash(data){
 
     return btoa(data + Date.now()).substring(0,30);
 }
+
+/* ADD EVIDENCE */
 
 function addEvidence(){
 
@@ -439,14 +487,19 @@ function addEvidence(){
             warrant +
             timestamp
         );
-let block = {
+
+    let block = {
+
     caseId,
     evidence,
     description,
     officer,
     warrant,
     timestamp,
-    assignedOfficer: officer,
+
+    assignedOfficer:
+        localStorage.getItem("username"),
+
     previousHash,
     currentHash
 };
@@ -458,22 +511,19 @@ let block = {
         JSON.stringify(blockchain)
     );
 
-    
+    updateStats();
 
-    alert("Evidence Added Successfully");
+    renderLogs();
+
+    alert("✅ Evidence Added Successfully");
 
     document.getElementById("caseId").value = "";
-
     document.getElementById("evidenceData").value = "";
-
     document.getElementById("description").value = "";
-
-    document.getElementById("officerName").value = "";
-
     document.getElementById("warrantId").value = "";
 }
 
-
+/* VERIFY ACCESS */
 function verifyAccess(){
 
     const caseId =
@@ -488,25 +538,42 @@ function verifyAccess(){
     const currentRole =
         localStorage.getItem("role");
 
-    const foundEvidence = blockchain.filter(
+    /* FIND MATCHING EVIDENCE */
+
+    const matchingEvidence = blockchain.filter(
         block =>
             block.caseId === caseId &&
             block.warrant === warrantId
     );
 
-    if(foundEvidence.length === 0){
+    /* INVALID ACCESS */
+
+    if(matchingEvidence.length === 0){
+
+        let intrusions =
+            localStorage.getItem("intrusions") || 0;
+
+        intrusions++;
+
+        localStorage.setItem(
+            "intrusions",
+            intrusions
+        );
+
+        updateStats();
 
         alert("❌ Invalid Warrant or Case ID");
+
         return;
     }
 
-    /* ADMIN CAN ACCESS EVERYTHING */
+    /* ADMIN ACCESS */
 
     if(currentRole === "admin"){
 
         localStorage.setItem(
             "authorizedEvidence",
-            JSON.stringify(foundEvidence)
+            JSON.stringify(matchingEvidence)
         );
 
         window.location.href = "evidence.html";
@@ -514,27 +581,47 @@ function verifyAccess(){
         return;
     }
 
-    /* OFFICER ACCESS CHECK */
+    /* OFFICER ACCESS */
 
-    const assignedCase = foundEvidence.some(
-        block =>
-            block.assignedOfficer === currentUser
-    );
+    const officerEvidence =
+        matchingEvidence.filter(
+            block =>
+                block.assignedOfficer === currentUser
+        );
 
-    if(!assignedCase){
+    /* OFFICER TRYING TO ACCESS OTHER OFFICER CASE */
 
-        alert("⛔ Access Denied: Not Assigned Officer");
+    if(officerEvidence.length === 0){
+
+        let intrusions =
+            localStorage.getItem("intrusions") || 0;
+
+        intrusions++;
+
+        localStorage.setItem(
+            "intrusions",
+            intrusions
+        );
+
+        updateStats();
+
+        alert(
+          "⛔ Unauthorized Access Detected"
+        );
+
         return;
     }
 
+    /* ALLOWED */
+
     localStorage.setItem(
         "authorizedEvidence",
-        JSON.stringify(foundEvidence)
+        JSON.stringify(officerEvidence)
     );
 
     window.location.href = "evidence.html";
 }
-
+/* LOGOUT */
 
 function logout(){
 
@@ -547,6 +634,77 @@ function logout(){
     window.location.href = "index.html";
 }
 
+/* UPDATE DASHBOARD STATS */
+
+function updateStats(){
+
+    document.getElementById(
+        "totalEvidence"
+    ).innerText = blockchain.length;
+
+    let uniqueCases =
+        [...new Set(
+            blockchain.map(
+                block => block.caseId
+            )
+        )];
+
+    document.getElementById(
+        "totalCases"
+    ).innerText = uniqueCases.length;
+
+    let intrusions =
+        localStorage.getItem("intrusions") || 0;
+
+    document.getElementById(
+        "intrusionCount"
+    ).innerText = intrusions;
+}
+
+/* RENDER RECENT LOGS */
+
+function renderLogs(){
+
+    const logsTable =
+        document.getElementById("logsTable");
+
+    logsTable.innerHTML = "";
+
+    blockchain
+    .slice()
+    .reverse()
+    .forEach(block => {
+
+        logsTable.innerHTML += `
+
+        <tr>
+
+            <td>${block.caseId}</td>
+
+            <td>${block.evidence}</td>
+
+            <td class="success">
+                Verified
+            </td>
+
+            <td>
+                ${block.currentHash.substring(0,12)}...
+            </td>
+
+        </tr>
+
+        `;
+
+    });
+}
+
+/* INITIAL LOAD */
+
+updateStats();
+
+renderLogs();
+
 </script>
+
 </body>
 </html>

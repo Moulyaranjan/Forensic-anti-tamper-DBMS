@@ -1,41 +1,75 @@
 const express = require("express");
+
 const mysql = require("mysql2");
+
 const cors = require("cors");
-const crypto = require("crypto");
 
 const app = express();
+process.on("uncaughtException",(err)=>{
+
+    console.log(
+        "UNCAUGHT ERROR:",
+        err
+    );
+
+});
+
+/* MIDDLEWARE */
 
 app.use(cors());
+
 app.use(express.json());
+
+/* MYSQL CONNECTION */
 
 const db = mysql.createConnection({
 
     host:"localhost",
+
     user:"root",
+
     password:"1234",
+
     database:"forensic_db"
 
 });
 
+/* CONNECT */
+
 db.connect((err)=>{
 
     if(err){
-        console.log(err);
+
+        console.log("MYSQL ERROR:",err);
+
     }
 
     else{
-        console.log("MySQL Connected");
+
+        console.log("✅ MySQL Connected");
+
     }
 
 });
 
-/* LOGIN */
+/* =========================================
+   LOGIN API
+========================================= */
 
 app.post("/login",(req,res)=>{
+console.log("LOGIN API HIT");
 
-    const {username,password} = req.body;
+console.log(req.body);
+    const{
 
-    const sql = `
+        username,
+        password
+
+    } = req.body;
+
+    const sql =
+
+    `
 
     SELECT * FROM users
 
@@ -47,12 +81,25 @@ app.post("/login",(req,res)=>{
 
         sql,
 
-        [username,password],
+        [
+
+            username,
+            password
+
+        ],
 
         (err,result)=>{
 
             if(err){
-                return res.status(500).json(err);
+
+                console.log(err);
+
+                return res.json({
+
+                    success:false
+
+                });
+
             }
 
             if(result.length > 0){
@@ -60,17 +107,21 @@ app.post("/login",(req,res)=>{
                 res.json({
 
                     success:true,
-                    role:result[0].role,
-                    username:result[0].username
+
+                    role:result[0].role
 
                 });
+
             }
 
             else{
 
                 res.json({
+
                     success:false
+
                 });
+
             }
 
         }
@@ -79,29 +130,28 @@ app.post("/login",(req,res)=>{
 
 });
 
-/* ADD EVIDENCE */
+/* =========================================
+   ADD EVIDENCE API
+========================================= */
 
-app.post("/addEvidence", (req, res) => {
+app.post("/addEvidence",(req,res)=>{
 
-    const {
+    console.log("API HIT");
 
-        case_id,
-        data,
-        warrant_id
+    console.log(req.body);
+
+    const{
+
+        caseId,
+        evidence,
+        description,
+        officer,
+        warrant,
+        hash
 
     } = req.body;
 
-    const crypto = require("crypto");
-
-    const hash = crypto
-
-    .createHash("sha256")
-
-    .update(data + Date.now())
-
-    .digest("hex");
-
-    /* STEP 1 : CREATE CASE */
+    /* INSERT CASE */
 
     const insertCase =
 
@@ -109,9 +159,9 @@ app.post("/addEvidence", (req, res) => {
 
     INSERT IGNORE INTO cases
 
-    (case_id, case_name)
+    (case_id,case_name)
 
-    VALUES (?, ?)
+    VALUES (?,?)
 
     `;
 
@@ -121,23 +171,29 @@ app.post("/addEvidence", (req, res) => {
 
         [
 
-            case_id,
+            caseId,
 
             "Auto Generated Case"
 
         ],
 
-        (err) => {
+        (err)=>{
 
             if(err){
 
                 console.log(err);
 
-                return res.status(500).json(err);
+                return res.json({
+
+                    success:false,
+
+                    message:"Case Insert Failed"
+
+                });
 
             }
 
-            /* STEP 2 : CREATE WARRANT */
+            /* INSERT WARRANT */
 
             const insertWarrant =
 
@@ -154,7 +210,7 @@ app.post("/addEvidence", (req, res) => {
 
             )
 
-            VALUES (?, ?, ?, ?)
+            VALUES (?,?,?,?)
 
             `;
 
@@ -164,24 +220,30 @@ app.post("/addEvidence", (req, res) => {
 
                 [
 
-                    warrant_id,
-                    case_id,
-                    "officer_01",
+                    warrant,
+                    caseId,
+                    officer,
                     "VALID"
 
                 ],
 
-                (err) => {
+                (err)=>{
 
                     if(err){
 
                         console.log(err);
 
-                        return res.status(500).json(err);
+                        return res.json({
+
+                            success:false,
+
+                            message:"Warrant Insert Failed"
+
+                        });
 
                     }
 
-                    /* STEP 3 : INSERT EVIDENCE */
+                    /* INSERT EVIDENCE */
 
                     const insertEvidence =
 
@@ -199,7 +261,7 @@ app.post("/addEvidence", (req, res) => {
 
                     )
 
-                    VALUES (?, ?, ?, ?, ?)
+                    VALUES (?,?,?,?,?)
 
                     `;
 
@@ -209,22 +271,34 @@ app.post("/addEvidence", (req, res) => {
 
                         [
 
-                            case_id,
-                            "officer_01",
-                            data,
+                            caseId,
+
+                            officer,
+
+                            evidence +
+                            " - " +
+                            description,
+
                             hash,
-                            warrant_id
+
+                            warrant
 
                         ],
 
-                        (err, result) => {
+                        (err,result)=>{
 
                             if(err){
 
                                 console.log(err);
 
-                                return res.status(500)
-                                .json(err);
+                                return res.json({
+
+                                    success:false,
+
+                                    message:
+                                    "Evidence Insert Failed"
+
+                                });
 
                             }
 
@@ -251,29 +325,47 @@ app.post("/addEvidence", (req, res) => {
 
 });
 
+/* =========================================
+   GET ALL EVIDENCE
+========================================= */
+
 app.get("/evidence",(req,res)=>{
 
-    const sql = `
+    const sql =
+
+    `
 
     SELECT * FROM evidence_chain
 
-    ORDER BY timestamp DESC
+    ORDER BY evidence_id DESC
 
     `;
 
-    db.query(sql,(err,result)=>{
+    db.query(
 
-        if(err){
+        sql,
 
-            return res.status(500)
-            .json(err);
+        (err,result)=>{
+
+            if(err){
+
+                console.log(err);
+
+                return res.json([]);
+
+            }
+
+            res.json(result);
+
         }
 
-        res.json(result);
-
-    });
+    );
 
 });
+
+/* =========================================
+   DASHBOARD STATS
+========================================= */
 
 app.get("/stats",(req,res)=>{
 
@@ -281,43 +373,202 @@ app.get("/stats",(req,res)=>{
 
     db.query(
 
-    "SELECT COUNT(*) AS totalCases FROM cases",
+        "SELECT COUNT(*) AS totalCases FROM cases",
 
-    (err,result1)=>{
+        (err,result)=>{
 
-        stats.totalCases =
-            result1[0].totalCases;
-
-        db.query(
-
-        "SELECT COUNT(*) AS totalEvidence FROM evidence_chain",
-
-        (err,result2)=>{
-
-            stats.totalEvidence =
-                result2[0].totalEvidence;
+            stats.totalCases =
+            result[0].totalCases;
 
             db.query(
 
-            "SELECT COUNT(*) AS intrusions FROM intrusion_logs",
+                `
 
-            (err,result3)=>{
+                SELECT COUNT(*) AS totalEvidence
 
-                stats.intrusions =
-                    result3[0].intrusions;
+                FROM evidence_chain
 
-                res.json(stats);
+                `,
 
-            });
+                (err,result)=>{
 
-        });
+                    stats.totalEvidence =
+                    result[0].totalEvidence;
 
-    });
+                    db.query(
+
+                        `
+
+                        SELECT COUNT(*) AS totalIntrusions
+
+                        FROM intrusion_logs
+
+                        `,
+
+                        (err,result)=>{
+
+                            stats.totalIntrusions =
+                            result[0].totalIntrusions;
+
+                            res.json(stats);
+
+                        }
+
+                    );
+
+                }
+
+            );
+
+        }
+
+    );
 
 });
 
+/* =========================================
+   VERIFY WARRANT ACCESS
+========================================= */
+app.post("/verify",(req,res)=>{
+
+    const{
+
+        caseId,
+        warrantId
+
+    } = req.body;
+
+    const sql =
+
+    `
+
+    SELECT * FROM evidence_chain
+
+WHERE case_id=?
+AND warrant_id=?
+AND officer_name=?
+
+    `;
+
+    db.query(
+
+        sql,
+
+        [
+
+           [
+    caseId,
+    warrantId,
+    req.body.username
+]
+
+        ],
+
+        (err,result)=>{
+
+            if(err){
+
+                console.log(err);
+
+                return res.json({
+
+                    success:false
+
+                });
+
+            }
+
+            /* VALID ACCESS */
+
+            if(result.length > 0){
+
+                return res.json({
+
+                    success:true,
+
+                    evidence:result
+
+                });
+
+            }
+
+            /* INVALID ACCESS */
+
+            const intrusionSql =
+
+            `
+
+            INSERT INTO intrusion_logs
+
+            (attempt,severity)
+
+            VALUES (?,?)
+
+            `;
+
+            db.query(
+
+                intrusionSql,
+
+                [
+
+                    `Unauthorized access for Case ID ${caseId}`,
+
+                    "HIGH"
+
+                ],
+
+                (err,intrusionResult)=>{
+
+                    if(err){
+
+                        console.log(
+                            "INTRUSION ERROR:",
+                            err
+                        );
+
+                        return res.json({
+
+                            success:false,
+
+                            message:
+                            "Intrusion Logging Failed"
+
+                        });
+
+                    }
+
+                    console.log(
+                        "🚨 Intrusion Logged"
+                    );
+
+                    return res.json({
+
+                        success:false,
+
+                        message:
+                        "Intrusion Detected"
+
+                    });
+
+                }
+
+            );
+
+        }
+
+    );
+
+});
+
+/* =========================================
+   SERVER
+========================================= */
+
 app.listen(5000,()=>{
 
-    console.log("Server Running On Port 5000");
+    console.log(
+        "🚀 Server Running On Port 5000"
+    );
 
 });

@@ -329,21 +329,56 @@ app.post("/addEvidence",(req,res)=>{
    GET ALL EVIDENCE
 ========================================= */
 
-app.get("/evidence",(req,res)=>{
+app.get("/evidence/:username",(req,res)=>{
 
-    const sql =
+    const username =
+    req.params.username;
 
-    `
+    let sql = "";
 
-    SELECT * FROM evidence_chain
+    let values = [];
 
-    ORDER BY evidence_id DESC
+    /* CHIEF CAN VIEW EVERYTHING */
 
-    `;
+    if(username === "chief_forensic"){
+
+        sql =
+
+        `
+
+        SELECT * FROM evidence_chain
+
+        ORDER BY evidence_id DESC
+
+        `;
+
+    }
+
+    /* OFFICERS VIEW ONLY OWN DATA */
+
+    else{
+
+        sql =
+
+        `
+
+        SELECT * FROM evidence_chain
+
+        WHERE officer_name=?
+
+        ORDER BY evidence_id DESC
+
+        `;
+
+        values = [username];
+
+    }
 
     db.query(
 
         sql,
+
+        values,
 
         (err,result)=>{
 

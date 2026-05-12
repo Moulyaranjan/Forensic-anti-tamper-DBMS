@@ -1,189 +1,269 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Forensic Anti-Tamper System</title>
 
-    <style>
+<meta charset="UTF-8">
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial;
-        }
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-        body{
+<title>Forensic Anti-Tamper System</title>
 
-            background:#020617;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-            color:white;
-        }
+<style>
 
-        .login-box{
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
 
-            width:420px;
-            background:#0f172a;
-            padding:40px;
-            border-radius:20px;
-            border:1px solid #00ffe0;
-            box-shadow:0 0 40px rgba(0,255,224,0.2);
-            text-align:center;
-        }
+body{
 
-        .logo{
+    height:100vh;
 
-            font-size:65px;
-            margin-bottom:10px;
-        }
+    background:
+    linear-gradient(
+        rgba(0,0,0,0.7),
+        rgba(0,0,0,0.8)
+    ),
 
-        h1{
+    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1974&auto=format&fit=crop");
 
-            color:#19f5e5;
-            font-size:55px;
-            margin-bottom:10px;
-        }
+    background-size:cover;
 
-        p{
+    background-position:center;
 
-            color:#cbd5e1;
-            margin-bottom:35px;
-        }
+    display:flex;
 
-        input{
+    justify-content:center;
 
-            width:100%;
-            padding:16px;
-            margin-bottom:18px;
-            border:none;
-            outline:none;
-            border-radius:10px;
-            background:#1e293b;
-            color:white;
-            font-size:16px;
-        }
+    align-items:center;
 
-        button{
+    color:white;
+}
 
-            width:100%;
-            padding:16px;
-            border:none;
-            border-radius:10px;
-            background:#22e3d6;
-            color:black;
-            font-size:20px;
-            font-weight:bold;
-            cursor:pointer;
-            transition:0.3s;
-        }
+/* LOGIN BOX */
 
-        button:hover{
+.login-box{
 
-            background:#0ff;
-            transform:scale(1.02);
-        }
+    width:420px;
 
-        .error{
+    background:rgba(10,15,35,0.95);
 
-            color:#ff5e7a;
-            margin-top:15px;
-        }
+    border:2px solid #14f1d9;
 
-    </style>
+    border-radius:20px;
+
+    padding:40px;
+
+    box-shadow:0 0 25px #14f1d960;
+}
+
+.logo{
+
+    text-align:center;
+
+    font-size:48px;
+
+    font-weight:bold;
+
+    color:#14f1d9;
+
+    margin-bottom:10px;
+}
+
+.subtitle{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+    color:#cfd6e4;
+
+    font-size:17px;
+}
+
+.input-box{
+
+    margin-bottom:20px;
+}
+
+.input-box label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:16px;
+}
+
+.input-box input{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#1b2750;
+
+    color:white;
+
+    font-size:16px;
+}
+
+.input-box input:focus{
+
+    outline:none;
+
+    border:1px solid #14f1d9;
+}
+
+/* BUTTON */
+
+.login-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#14f1d9;
+
+    color:black;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.login-btn:hover{
+
+    opacity:0.9;
+}
+
+/* MESSAGE */
+
+#msg{
+
+    margin-top:20px;
+
+    text-align:center;
+
+    font-size:17px;
+
+    font-weight:bold;
+}
+
+/* INFO */
+
+.info{
+
+    margin-top:30px;
+
+    background:#111a35;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border-left:4px solid #14f1d9;
+}
+
+.info h3{
+
+    color:#14f1d9;
+
+    margin-bottom:10px;
+}
+
+.info p{
+
+    margin-bottom:5px;
+
+    color:#d4d9e6;
+}
+
+</style>
+
 </head>
 
 <body>
 
 <div class="login-box">
 
-    <div class="logo"></div>
+    <!-- LOGO -->
 
-    <h1>FATS</h1>
+    <div class="logo">
 
-    <p>Forensic Anti-Tamper Database System</p>
+        FATS
 
-    <input type="text"
-           id="username"
-           placeholder="Enter Username"
-           autocomplete="off">
+    </div>
 
-    <input type="password"
-           id="password"
-           placeholder="Enter Password"
-           autocomplete="new-password">
+    <div class="subtitle">
 
-    <button onclick="login()">
-        Secure Login
+        Forensic Anti-Tamper Database System
+
+    </div>
+
+    <!-- USERNAME -->
+
+    <div class="input-box">
+
+        <label>Username</label>
+
+        <input type="text"
+        id="username"
+        placeholder="Enter Username">
+
+    </div>
+
+    <!-- PASSWORD -->
+
+    <div class="input-box">
+
+        <label>Password</label>
+
+        <input type="password"
+        id="password"
+        placeholder="Enter Password">
+
+    </div>
+
+    <!-- LOGIN BUTTON -->
+
+    <button class="login-btn"
+    onclick="login()">
+
+        Login
+
     </button>
 
-    <div class="error" id="error"></div>
+    <!-- MESSAGE -->
 
-</div>
+    <div id="msg"></div>
 
-<script>
+    <!-- DEMO USERS -->
 
-function login(){
+   
 
-    const username =
-        document.getElementById("username").value;
 
-    const password =
-        document.getElementById("password").value;
 
-    const users = [
+<!-- SCRIPT -->
 
-        {
-            username:"chief_forensic",
-            password:"CF2026",
-            role:"admin"
-        },
-
-        {
-            username:"officer_01",
-            password:"OFC101",
-            role:"employee"
-        },
-
-        {
-            username:"officer_02",
-            password:"OFC102",
-            role:"employee"
-        }
-    ];
-
-    const validUser = users.find(user =>
-        user.username === username &&
-        user.password === password
-    );
-
-    if(validUser){
-
-        localStorage.setItem("loggedIn","true");
-
-        localStorage.setItem(
-            "role",
-            validUser.role
-        );
-
-        localStorage.setItem(
-            "username",
-            validUser.username
-        );
-
-        window.location.href =
-            "dashboard.html";
-    }
-
-    else{
-
-        document.getElementById("error").innerHTML =
-            "Invalid Username or Password";
-    }
-}
-
-</script>
+<script src="script.js"></script>
 
 </body>
+
 </html>

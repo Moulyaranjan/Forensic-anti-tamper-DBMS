@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -82,12 +81,11 @@ app.post("/login",(req,res)=>{
 
 /* ADD EVIDENCE */
 
-app.post("/addEvidence",(req,res)=>{
+app.post("/addEvidence", (req, res) => {
 
     const {
 
         case_id,
-        officer_name,
         data,
         warrant_id
 
@@ -103,49 +101,149 @@ app.post("/addEvidence",(req,res)=>{
 
     .digest("hex");
 
-    const sql = `
+    /* STEP 1 : CREATE CASE */
 
-    INSERT INTO evidence_chain
+    const insertCase =
 
-    (
-        case_id,
-        officer_name,
-        data,
-        hash_value,
-        warrant_id
-    )
+    `
 
-    VALUES (?, ?, ?, ?, ?)
+    INSERT IGNORE INTO cases
+
+    (case_id, case_name)
+
+    VALUES (?, ?)
 
     `;
 
     db.query(
 
-        sql,
+        insertCase,
 
         [
 
             case_id,
-            officer_name,
-            data,
-            hash,
-            warrant_id
+
+            "Auto Generated Case"
 
         ],
 
-        (err,result)=>{
+        (err) => {
 
             if(err){
 
                 console.log(err);
 
-                return res.status(500)
-                .json(err);
+                return res.status(500).json(err);
+
             }
 
-            res.json({
-                success:true
-            });
+            /* STEP 2 : CREATE WARRANT */
+
+            const insertWarrant =
+
+            `
+
+            INSERT IGNORE INTO warrants
+
+            (
+
+                warrant_id,
+                case_id,
+                issued_to,
+                status
+
+            )
+
+            VALUES (?, ?, ?, ?)
+
+            `;
+
+            db.query(
+
+                insertWarrant,
+
+                [
+
+                    warrant_id,
+                    case_id,
+                    "officer_01",
+                    "VALID"
+
+                ],
+
+                (err) => {
+
+                    if(err){
+
+                        console.log(err);
+
+                        return res.status(500).json(err);
+
+                    }
+
+                    /* STEP 3 : INSERT EVIDENCE */
+
+                    const insertEvidence =
+
+                    `
+
+                    INSERT INTO evidence_chain
+
+                    (
+
+                        case_id,
+                        officer_name,
+                        data,
+                        hash_value,
+                        warrant_id
+
+                    )
+
+                    VALUES (?, ?, ?, ?, ?)
+
+                    `;
+
+                    db.query(
+
+                        insertEvidence,
+
+                        [
+
+                            case_id,
+                            "officer_01",
+                            data,
+                            hash,
+                            warrant_id
+
+                        ],
+
+                        (err, result) => {
+
+                            if(err){
+
+                                console.log(err);
+
+                                return res.status(500)
+                                .json(err);
+
+                            }
+
+                            res.json({
+
+                                success:true,
+
+                                message:
+                                "Evidence Added"
+
+                            });
+
+                        }
+
+                    );
+
+                }
+
+            );
 
         }
 

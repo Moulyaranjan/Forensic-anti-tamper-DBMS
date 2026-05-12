@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Forensic Dashboard</title>
 
 <style>
@@ -11,13 +16,15 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 body{
     background:#050816;
     color:white;
 }
+
+/* CONTAINER */
 
 .container{
     display:flex;
@@ -27,114 +34,173 @@ body{
 /* SIDEBAR */
 
 .sidebar{
+
     width:260px;
+
     background:#081024;
+
     border-right:2px solid #14f1d9;
+
     padding:30px 20px;
+
     display:flex;
+
     flex-direction:column;
+
     justify-content:space-between;
 }
 
 .logo{
+
     color:#14f1d9;
+
     font-size:42px;
+
     font-weight:bold;
+
     margin-bottom:50px;
 }
 
 .menu{
+
     display:flex;
+
     flex-direction:column;
+
     gap:20px;
 }
 
 .menu button{
+
     background:none;
+
     border:none;
+
     color:white;
+
     text-align:left;
+
     font-size:20px;
+
     padding:15px;
+
     border-radius:12px;
+
     cursor:pointer;
+
     transition:0.3s;
 }
 
 .menu button:hover{
+
     background:#132347;
 }
 
 .logout{
+
     background:#ff4d6d;
+
     border:none;
+
     padding:15px;
+
     color:white;
+
     font-size:18px;
+
     border-radius:12px;
+
     cursor:pointer;
-    margin-top:40px;
 }
 
-/* MAIN CONTENT */
+/* MAIN */
 
 .main{
+
     flex:1;
+
     padding:40px;
 }
 
 .title{
-    font-size:55px;
+
+    font-size:52px;
+
     color:#14f1d9;
-    margin-bottom:30px;
+
+    margin-bottom:35px;
 }
 
 /* CARDS */
 
 .cards{
+
     display:grid;
+
     grid-template-columns:repeat(3,1fr);
+
     gap:25px;
+
     margin-bottom:40px;
 }
 
 .card{
+
     background:#101937;
+
     padding:30px;
+
     border-radius:20px;
+
     border:1px solid #14f1d94f;
 }
 
 .card h3{
-    color:#bfc7d5;
+
+    color:#cfd6e4;
+
     margin-bottom:20px;
+
     font-size:24px;
 }
 
 .card p{
-    font-size:50px;
-    font-weight:bold;
+
+    font-size:48px;
+
     color:#14f1d9;
+
+    font-weight:bold;
 }
 
 /* FORMS */
 
 .form-section{
+
     display:grid;
+
     grid-template-columns:1fr 1fr;
+
     gap:30px;
+
     margin-bottom:40px;
 }
 
 .form-box{
+
     background:#101937;
+
     padding:30px;
+
     border-radius:20px;
+
     border:1px solid #14f1d94f;
 }
 
 .form-box h2{
+
     color:#14f1d9;
+
     margin-bottom:25px;
 }
 
@@ -142,110 +208,121 @@ body{
 .form-box textarea{
 
     width:100%;
+
     padding:15px;
+
     margin-bottom:15px;
+
     border:none;
+
     border-radius:10px;
+
     background:#1a264d;
+
     color:white;
+
     font-size:16px;
 }
 
 .form-box textarea{
+
     height:120px;
+
     resize:none;
 }
 
 .form-box button{
+
     width:100%;
+
     padding:15px;
+
     border:none;
+
     border-radius:10px;
+
     background:#14f1d9;
+
     font-size:18px;
+
     font-weight:bold;
+
     cursor:pointer;
+
+    transition:0.3s;
+}
+
+.form-box button:hover{
+
+    opacity:0.9;
 }
 
 .verify-result{
+
     margin-top:15px;
+
     font-size:18px;
+
     font-weight:bold;
 }
 
-/* BLOCKCHAIN */
-
-.chain-box{
-    background:#101937;
-    padding:30px;
-    border-radius:20px;
-    border:1px solid #14f1d94f;
-    margin-bottom:40px;
-}
-
-.chain-box h2{
-    color:#14f1d9;
-    margin-bottom:25px;
-}
-
-.block{
-    background:#18244d;
-    padding:20px;
-    border-radius:15px;
-    margin-bottom:20px;
-    border-left:5px solid #14f1d9;
-}
-
-.block h3{
-    margin-bottom:15px;
-}
-
-.hash{
-    color:#14f1d9;
-    word-break:break-all;
-}
-
-/* TABLE */
+/* RECENT LOGS */
 
 .logs{
+
     background:#101937;
+
     padding:30px;
+
     border-radius:20px;
+
     border:1px solid #14f1d94f;
 }
 
 .logs h2{
+
     color:#14f1d9;
-    margin-bottom:20px;
+
+    margin-bottom:25px;
 }
 
 table{
+
     width:100%;
+
     border-collapse:collapse;
 }
 
 th{
+
     background:#113447;
+
     padding:15px;
+
     color:#14f1d9;
 }
 
 td{
+
     padding:15px;
+
     border-bottom:1px solid #2d3963;
 }
 
 .success{
+
     color:#00ff88;
+
     font-weight:bold;
 }
 
-.error{
-    color:#ff4d6d;
-    font-weight:bold;
+.hash{
+
+    color:#14f1d9;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -259,33 +336,54 @@ td{
         <div>
 
             <div class="logo">
+
                 FATS
+
             </div>
 
             <div class="menu">
 
                 <button onclick="location.href='dashboard.html'">
+
                     Dashboard
+
                 </button>
 
                 <button onclick="location.href='blockchain.html'">
+
                     Blockchain
+
                 </button>
 
                 <button onclick="location.href='intrusion.html'">
+
                     Intrusion Logs
+
                 </button>
 
                 <button onclick="location.href='warrant.html'">
+
                     Warrant Access
+
                 </button>
+
+                <button
+type="button"
+onclick="window.location.href='instruction.html'">
+
+Instruction
+
+</button>
 
             </div>
 
         </div>
 
-        <button class="logout" onclick="logout()">
+        <button class="logout"
+        onclick="logout()">
+
             Logout
+
         </button>
 
     </div>
@@ -295,7 +393,9 @@ td{
     <div class="main">
 
         <h1 class="title">
+
             Forensic Anti-Tamper Dashboard
+
         </h1>
 
         <!-- STATS -->
@@ -303,21 +403,32 @@ td{
         <div class="cards">
 
             <div class="card">
+
                 <h3>Total Cases</h3>
+
                 <p id="totalCases">0</p>
+
             </div>
 
             <div class="card">
+
                 <h3>Evidence Records</h3>
+
                 <p id="totalEvidence">0</p>
+
             </div>
 
             <div class="card">
+
                 <h3>Intrusion Attempts</h3>
+
                 <p id="intrusionCount"
-                   style="color:#ff4d6d;">
-                   0
+                style="color:#ff4d6d;">
+
+                0
+
                 </p>
+
             </div>
 
         </div>
@@ -333,26 +444,29 @@ td{
                 <h2>Add Evidence</h2>
 
                 <input type="text"
-                       id="caseId"
-                       placeholder="Enter Case ID">
+                id="caseId"
+                placeholder="Enter Case ID">
 
                 <input type="text"
-                       id="evidenceData"
-                       placeholder="Enter Evidence Data">
+                id="evidenceData"
+                placeholder="Enter Evidence Data">
 
-                <textarea id="description"
-                          placeholder="Enter Evidence Description"></textarea>
-
-                <input type="text"
-                       id="officerName"
-                       readonly>
+                <textarea
+                id="description"
+                placeholder="Enter Evidence Description"></textarea>
 
                 <input type="text"
-                       id="warrantId"
-                       placeholder="Enter Warrant ID">
+                id="officerName"
+                readonly>
+
+                <input type="text"
+                id="warrantId"
+                placeholder="Enter Warrant ID">
 
                 <button onclick="addEvidence()">
+
                     Add Evidence
+
                 </button>
 
             </div>
@@ -364,19 +478,21 @@ td{
                 <h2>Verify Access</h2>
 
                 <input type="text"
-                       id="verifyCase"
-                       placeholder="Enter Case ID">
+                id="verifyCase"
+                placeholder="Enter Case ID">
 
                 <input type="text"
-                       id="verifyWarrant"
-                       placeholder="Enter Warrant ID">
+                id="verifyWarrant"
+                placeholder="Enter Warrant ID">
 
                 <button onclick="verifyAccess()">
+
                     Verify Warrant
+
                 </button>
 
                 <div id="verifyMessage"
-                     class="verify-result"></div>
+                class="verify-result"></div>
 
             </div>
 
@@ -418,303 +534,10 @@ td{
 
 </div>
 
-<script>
+<!-- SCRIPT -->
 
-if(localStorage.getItem("loggedIn") !== "true"){
-
-    window.location.href = "index.html";
-}
-
-let blockchain = [];
-
-document.getElementById("officerName").value =
-    localStorage.getItem("username");
-
-/* HASH */
-
-function generateHash(data){
-
-    return btoa(data + Date.now()).substring(0,30);
-}
-
-/* ADD EVIDENCE */
-
-async function addEvidence(){
-
-    const caseId =
-        document.getElementById("caseId").value;
-
-    const evidence =
-        document.getElementById("evidenceData").value;
-
-    const description =
-        document.getElementById("description").value;
-
-    const officer =
-        document.getElementById("officerName").value;
-
-    const warrant =
-        document.getElementById("warrantId").value;
-
-    if(
-        caseId === "" ||
-        evidence === "" ||
-        description === "" ||
-        officer === "" ||
-        warrant === ""
-    ){
-
-        alert("Please fill all fields");
-
-        return;
-    }
-
-    try{
-
-        const res = await fetch(
-
-            "http://localhost:5000/addEvidence",
-
-            {
-
-                method:"POST",
-
-                headers:{
-                    "Content-Type":"application/json"
-                },
-
-                body:JSON.stringify({
-
-                    case_id:caseId,
-
-                    officer_name:officer,
-
-                    data:evidence,
-
-                    warrant_id:warrant
-
-                })
-
-            }
-
-        );
-
-        const result = await res.json();
-
-        if(result.success){
-
-            alert("✅ Evidence Added Successfully");
-
-            loadStats();
-
-            loadEvidence();
-
-        }
-
-        else{
-
-            alert("❌ Failed To Add Evidence");
-
-        }
-
-    }
-
-    catch(err){
-
-        console.log(err);
-
-        alert("❌ Server Error");
-
-    }
-
-}
-
-/* VERIFY ACCESS */
-function verifyAccess(){
-
-    const caseId =
-        document.getElementById("verifyCase").value;
-
-    const warrantId =
-        document.getElementById("verifyWarrant").value;
-
-    const currentUser =
-        localStorage.getItem("username");
-
-    const currentRole =
-        localStorage.getItem("role");
-
-    /* FIND MATCHING EVIDENCE */
-
-    const matchingEvidence = blockchain.filter(
-        block =>
-            block.caseId === caseId &&
-            block.warrant === warrantId
-    );
-
-    /* INVALID ACCESS */
-
-    if(matchingEvidence.length === 0){
-
-        let intrusions =
-            localStorage.getItem("intrusions") || 0;
-
-        intrusions++;
-
-        localStorage.setItem(
-            "intrusions",
-            intrusions
-        );
-
-        updateStats();
-
-        alert("❌ Invalid Warrant or Case ID");
-
-        return;
-    }
-
-    /* ADMIN ACCESS */
-
-    if(currentRole === "admin"){
-
-        localStorage.setItem(
-            "authorizedEvidence",
-            JSON.stringify(matchingEvidence)
-        );
-
-        window.location.href = "evidence.html";
-
-        return;
-    }
-
-    /* OFFICER ACCESS */
-
-    const officerEvidence =
-        matchingEvidence.filter(
-            block =>
-                block.assignedOfficer === currentUser
-        );
-
-    /* OFFICER TRYING TO ACCESS OTHER OFFICER CASE */
-
-    if(officerEvidence.length === 0){
-
-        let intrusions =
-            localStorage.getItem("intrusions") || 0;
-
-        intrusions++;
-
-        localStorage.setItem(
-            "intrusions",
-            intrusions
-        );
-
-        updateStats();
-
-        alert(
-          "⛔ Unauthorized Access Detected"
-        );
-
-        return;
-    }
-
-    /* ALLOWED */
-
-    localStorage.setItem(
-        "authorizedEvidence",
-        JSON.stringify(officerEvidence)
-    );
-
-    window.location.href = "evidence.html";
-}
-/* LOGOUT */
-
-function logout(){
-
-    localStorage.removeItem("loggedIn");
-
-    localStorage.removeItem("role");
-
-    localStorage.removeItem("username");
-
-    window.location.href = "index.html";
-}
-
-/* UPDATE DASHBOARD STATS */
-
-async function loadStats(){
-
-    const res = await fetch(
-
-        "http://localhost:5000/stats"
-
-    );
-
-    const data = await res.json();
-
-    document.getElementById(
-        "totalCases"
-    ).innerText = data.totalCases;
-
-    document.getElementById(
-        "totalEvidence"
-    ).innerText = data.totalEvidence;
-
-    document.getElementById(
-        "intrusionCount"
-    ).innerText = data.intrusions;
-}
-
-/* RENDER RECENT LOGS */
-
-async function loadEvidence(){
-
-    const res = await fetch(
-
-        "http://localhost:5000/evidence"
-
-    );
-
-    blockchain = await res.json();
-
-    const logsTable =
-        document.getElementById("logsTable");
-
-    logsTable.innerHTML = "";
-
-    blockchain.forEach(block => {
-
-        logsTable.innerHTML += `
-
-        <tr>
-
-            <td>${block.case_id}</td>
-
-            <td>${block.data}</td>
-
-            <td class="success">
-                Verified
-            </td>
-
-            <td>
-                ${block.hash_value.substring(0,12)}...
-            </td>
-
-        </tr>
-
-        `;
-
-    });
-
-}
-
-/* INITIAL LOAD */
-
-loadStats();
-
-loadEvidence();
-
-</script>
+<script src="script.js"></script>
 
 </body>
+
 </html>

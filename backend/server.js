@@ -464,40 +464,76 @@ app.get("/stats",(req,res)=>{
 /* =========================================
    VERIFY WARRANT ACCESS
 ========================================= */
+
 app.post("/verify",(req,res)=>{
 
     const{
 
         caseId,
-        warrantId
+        warrantId,
+        username
 
     } = req.body;
 
-    const sql =
+    let sql = "";
 
-    `
+    let values = [];
 
-    SELECT * FROM evidence_chain
+    /* CHIEF CAN ACCESS ALL */
 
-WHERE case_id=?
-AND warrant_id=?
-AND officer_name=?
+    if(username === "chief_forensic"){
 
-    `;
+        sql =
+
+        `
+
+        SELECT * FROM evidence_chain
+
+        WHERE case_id=?
+        AND warrant_id=?
+
+        `;
+
+        values = [
+
+            caseId,
+            warrantId
+
+        ];
+
+    }
+
+    /* OFFICERS CAN ACCESS ONLY OWN DATA */
+
+    else{
+
+        sql =
+
+        `
+
+        SELECT * FROM evidence_chain
+
+        WHERE case_id=?
+        AND warrant_id=?
+        AND officer_name=?
+
+        `;
+
+        values = [
+
+            caseId,
+            warrantId,
+            username
+
+        ];
+
+    }
 
     db.query(
 
         sql,
 
-        [
-
-           [
-    caseId,
-    warrantId,
-    req.body.username
-]
-
-        ],
+        values,
 
         (err,result)=>{
 
@@ -513,88 +549,65 @@ AND officer_name=?
 
             }
 
-            /* VALID ACCESS */
+            /* ACCESS GRANTED */
 
             if(result.length > 0){
 
                 return res.json({
 
                     success:true,
-
+                    message:"Access Granted",
                     evidence:result
 
                 });
 
             }
 
-            /* INVALID ACCESS */
+            /* INTRUSION DETECTED */
 
-            const intrusionSql =
+            else{
 
-            `
+                const intrusionSql =
 
-            INSERT INTO intrusion_logs
+                `
 
-            (attempt,severity)
+                INSERT INTO intrusion_logs
 
-            VALUES (?,?)
+                (attempt,severity)
 
-            `;
+                VALUES (?,?)
 
-            db.query(
+                `;
 
-                intrusionSql,
+                db.query(
 
-                [
+                    intrusionSql,
 
-                    `Unauthorized access for Case ID ${caseId}`,
+                    [
 
-                    "HIGH"
+                        `Unauthorized access by ${username}`,
 
-                ],
+                        "HIGH"
 
-                (err,intrusionResult)=>{
+                    ]
 
-                    if(err){
+                );
 
-                        console.log(
-                            "INTRUSION ERROR:",
-                            err
-                        );
+                return res.json({
 
-                        return res.json({
+                    success:false,
+                    message:"Intrusion Detected"
 
-                            success:false,
+                });
 
-                            message:
-                            "Intrusion Logging Failed"
-
-                        });
-
-                    }
-
-                    console.log(
-                        "🚨 Intrusion Logged"
-                    );
-
-                    return res.json({
-
-                        success:false,
-
-                        message:
-                        "Intrusion Detected"
-
-                    });
-
-                }
-
-            );
+            }
 
         }
 
     );
 
 });
+
 
 /* =========================================
    SERVER

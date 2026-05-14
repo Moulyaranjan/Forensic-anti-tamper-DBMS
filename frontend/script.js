@@ -1,11 +1,11 @@
+const API = "http://localhost:5000";
+const intrusionSound = new Audio("./audioDBMS.mp3");
+
 /* =========================================
-   FORENSIC ANTI-TAMPER SYSTEM
-   LOCAL STORAGE VERSION
+   LOGIN
 ========================================= */
 
-/* LOGIN */
-
-async function login() {
+async function login(){
 
     const username =
         document.getElementById("username").value;
@@ -13,67 +13,64 @@ async function login() {
     const password =
         document.getElementById("password").value;
 
-    /* DEMO USERS */
+    try{
 
-    const users = [
+        const res = await fetch(
 
-        {
-            username:"chief",
-            password:"1234",
-            role:"admin"
-        },
+            `${API}/login`,
 
-        {
-            username:"officer_01",
-            password:"1111",
-            role:"officer"
-        },
+            {
 
-        {
-            username:"officer_02",
-            password:"2222",
-            role:"officer"
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    username,
+                    password
+
+                })
+
+            }
+
+        );
+
+        const data = await res.json();
+
+        if(data.success){
+
+            localStorage.setItem(
+                "username",
+                username
+            );
+
+            localStorage.setItem(
+                "role",
+                data.role
+            );
+
+            window.location.href =
+                "dashboard.html";
+
         }
 
-    ];
+        else{
 
-    const validUser = users.find(
+            document.getElementById("msg")
+            .innerHTML =
 
-        user =>
+            "❌ Invalid Credentials";
 
-            user.username === username &&
-
-            user.password === password
-
-    );
-
-    if(validUser){
-
-        localStorage.setItem(
-            "loggedIn",
-            "true"
-        );
-
-        localStorage.setItem(
-            "username",
-            validUser.username
-        );
-
-        localStorage.setItem(
-            "role",
-            validUser.role
-        );
-
-        window.location.href =
-            "dashboard.html";
+        }
 
     }
 
-    else{
+    catch(err){
 
-        document.getElementById("msg")
-        .innerHTML =
-        "❌ Invalid Login Credentials";
+        console.log(err);
 
     }
 
@@ -85,27 +82,11 @@ async function login() {
 
 function logout(){
 
-    localStorage.removeItem("loggedIn");
-
-    localStorage.removeItem("username");
-
-    localStorage.removeItem("role");
+    localStorage.clear();
 
     window.location.href =
         "index.html";
 }
-
-/* =========================================
-   GLOBAL BLOCKCHAIN ARRAY
-========================================= */
-
-let blockchain =
-
-    JSON.parse(
-
-        localStorage.getItem("blockchain")
-
-    ) || [];
 
 /* =========================================
    GENERATE HASH
@@ -125,7 +106,7 @@ function generateHash(data){
    ADD EVIDENCE
 ========================================= */
 
-function addEvidence(){
+async function addEvidence(){
 
     const caseId =
         document.getElementById("caseId").value;
@@ -141,8 +122,6 @@ function addEvidence(){
 
     const warrant =
         document.getElementById("warrantId").value;
-
-    /* VALIDATION */
 
     if(
 
@@ -161,82 +140,242 @@ function addEvidence(){
         return;
     }
 
-    /* CREATE BLOCK */
+    const hash = generateHash(
 
-    const newBlock = {
-
-        record_id:
-            blockchain.length + 1,
-
-        caseId,
-
-        evidence,
-
-        description,
-
-        assignedOfficer: officer,
-
-        warrant,
-
-        previous_hash:
-
-    blockchain.length > 0
-
-    ? blockchain[
-        blockchain.length - 1
-      ].current_hash || "GENESIS"
-
-    : "GENESIS",
-
-        current_hash:
-
-            generateHash(
-                evidence + description
-            )
-
-    };
-
-    /* PUSH INTO ARRAY */
-
-    blockchain.push(newBlock);
-
-    /* SAVE */
-
-    localStorage.setItem(
-
-        "blockchain",
-
-        JSON.stringify(blockchain)
+        evidence + description
 
     );
 
-    /* SUCCESS */
+    try{
 
-    alert("✅ Evidence Added Successfully");
+        const res = await fetch(
 
-    /* CLEAR FIELDS */
+            `${API}/addEvidence`,
 
-    document.getElementById("caseId").value = "";
+            {
 
-    document.getElementById("evidenceData").value = "";
+                method:"POST",
 
-    document.getElementById("description").value = "";
+                headers:{
+                    "Content-Type":"application/json"
+                },
 
-    document.getElementById("warrantId").value = "";
+                body:JSON.stringify({
 
-    /* UPDATE */
+                    caseId,
+                    evidence,
+                    description,
+                    officer,
+                    warrant,
+                    hash
 
-    updateStats();
+                })
 
-    loadEvidence();
+            }
+
+        );
+
+        const data = await res.json();
+
+        console.log(data);
+
+        if(data.success){
+
+            alert(
+                "✅ Evidence Added Successfully"
+            );
+
+            document.getElementById(
+                "caseId"
+            ).value = "";
+
+            document.getElementById(
+                "evidenceData"
+            ).value = "";
+
+            document.getElementById(
+                "description"
+            ).value = "";
+
+            document.getElementById(
+                "warrantId"
+            ).value = "";
+
+            loadStats();
+
+            loadEvidence();
+
+        }
+
+        else{
+
+            alert(
+                "❌ Failed To Add Evidence"
+            );
+
+        }
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        alert(
+            "❌ Server Error"
+        );
+
+    }
 
 }
 
 /* =========================================
-   VERIFY ACCESS
+   LOAD DASHBOARD STATS
 ========================================= */
 
-function verifyAccess(){
+async function loadStats(){
+
+    try{
+
+        const res = await fetch(
+
+            `${API}/stats`
+
+        );
+
+        const data = await res.json();
+
+        if(document.getElementById("totalCases")){
+
+            document.getElementById(
+                "totalCases"
+            ).innerHTML =
+
+            data.totalCases;
+        }
+
+        if(document.getElementById("totalEvidence")){
+
+            document.getElementById(
+                "totalEvidence"
+            ).innerHTML =
+
+            data.totalEvidence;
+        }
+
+        if(document.getElementById("intrusionCount")){
+
+            document.getElementById(
+                "intrusionCount"
+            ).innerHTML =
+
+            data.totalIntrusions;
+        }
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+/* =========================================
+   LOAD EVIDENCE LOGS
+========================================= */
+
+async function loadEvidence(){
+
+    const logsTable =
+    document.getElementById("logsTable");
+
+    if(!logsTable){
+
+        console.log("logsTable NOT FOUND");
+
+        return;
+
+    }
+
+    try{
+
+        const username =
+        localStorage.getItem("username");
+
+        console.log(
+            "USERNAME:",
+            username
+        );
+
+        const response = await fetch(
+
+            `${API}/evidence/${username}`
+
+        );
+
+        const data =
+        await response.json();
+
+        console.log(
+            "EVIDENCE RECEIVED:",
+            data
+        );
+
+        logsTable.innerHTML = "";
+
+        data.forEach((item)=>{
+
+            const row =
+
+            `
+
+            <tr>
+
+                <td>${item.case_id}</td>
+
+                <td>${item.data}</td>
+
+                <td>
+
+                    Verified
+
+                </td>
+
+                <td>
+
+                    ${(item.hash_value || "NO_HASH")
+                    .substring(0,12)}...
+
+                </td>
+
+            </tr>
+
+            `;
+
+            logsTable.innerHTML += row;
+
+        });
+
+    }
+
+    catch(err){
+
+        console.log(
+            "LOAD ERROR:",
+            err
+        );
+
+    }
+
+}
+
+/* =========================================
+   VERIFY WARRANT ACCESS
+========================================= */
+
+async function verifyAccess(){
 
     const caseId =
         document.getElementById("verifyCase").value;
@@ -244,228 +383,79 @@ function verifyAccess(){
     const warrantId =
         document.getElementById("verifyWarrant").value;
 
-    const currentUser =
-        localStorage.getItem("username");
+    try{
 
-    const currentRole =
-        localStorage.getItem("role");
+        const res = await fetch(
 
-    /* FIND MATCHING RECORDS */
+            `${API}/verify`,
 
-    const matchingEvidence = blockchain.filter(
+            {
 
-        block =>
+                method:"POST",
 
-            block.caseId === caseId &&
+                headers:{
+                    "Content-Type":"application/json"
+                },
 
-            block.warrant === warrantId
+               body:JSON.stringify({
 
-    );
+    caseId,
+    warrantId,
 
-    /* INVALID */
+    username:
+    localStorage.getItem("username")
 
-    if(matchingEvidence.length === 0){
+})
 
-        let intrusions =
-
-            parseInt(
-
-                localStorage.getItem("intrusions")
-
-            ) || 0;
-
-        intrusions++;
-
-        localStorage.setItem(
-
-            "intrusions",
-
-            intrusions
+            }
 
         );
 
-        updateStats();
+        const data = await res.json();
 
-        document.getElementById(
-            "verifyMessage"
-        ).innerHTML =
+        if(data.success){
+            console.log(
+                "VERIFIED EVIDENCE:",
+                data.evidence
+            );
 
-        "❌ Invalid Case ID or Warrant ID";
+            localStorage.setItem(
 
-        return;
-    }
+                "authorizedEvidence",
 
-    /* ADMIN */
+                JSON.stringify(data.evidence)
 
-    if(currentRole === "admin"){
+            );
+          alert("Access Granted");
 
-        localStorage.setItem(
+            window.location.href =
+                "evidence.html";
 
-            "authorizedEvidence",
+        }
 
-            JSON.stringify(matchingEvidence)
+        else{
+            intrusionSound.currentTime = 0;
+            intrusionSound.play();
 
-        );
+    document.getElementById(
+        "verifyMessage"
+    ).innerHTML =
 
-        window.location.href =
-            "evidence.html";
+    "🚨 Intrusion Detected";
+       
+    /* REFRESH DASHBOARD */
 
-        return;
-    }
-
-    /* OFFICER-SPECIFIC ACCESS */
-
-    const officerEvidence = matchingEvidence.filter(
-
-        block =>
-
-            block.assignedOfficer === currentUser
-
-    );
-
-    /* UNAUTHORIZED */
-
-    if(officerEvidence.length === 0){
-
-        let intrusions =
-
-            parseInt(
-
-                localStorage.getItem("intrusions")
-
-            ) || 0;
-
-        intrusions++;
-
-        localStorage.setItem(
-
-            "intrusions",
-
-            intrusions
-
-        );
-
-        updateStats();
-
-        document.getElementById(
-            "verifyMessage"
-        ).innerHTML =
-
-        "⛔ Unauthorized Access Detected";
-
-        return;
-    }
-
-    /* ALLOWED */
-
-    localStorage.setItem(
-
-        "authorizedEvidence",
-
-        JSON.stringify(officerEvidence)
-
-    );
-
-    window.location.href =
-        "evidence.html";
+    loadStats();
 
 }
 
-/* =========================================
-   UPDATE DASHBOARD
-========================================= */
-
-function updateStats(){
-
-    blockchain =
-
-        JSON.parse(
-
-            localStorage.getItem("blockchain")
-
-        ) || [];
-
-    const intrusions =
-
-        parseInt(
-
-            localStorage.getItem("intrusions")
-
-        ) || 0;
-
-    const totalCases =
-        blockchain.length;
-
-    const totalEvidence =
-        blockchain.length;
-
-    if(document.getElementById("totalCases")){
-
-        document.getElementById(
-            "totalCases"
-        ).innerHTML = totalCases;
     }
 
-    if(document.getElementById("totalEvidence")){
+    catch(err){
 
-        document.getElementById(
-            "totalEvidence"
-        ).innerHTML = totalEvidence;
+        console.log(err);
+
     }
-
-    if(document.getElementById("intrusionCount")){
-
-        document.getElementById(
-            "intrusionCount"
-        ).innerHTML = intrusions;
-    }
-
-}
-
-/* =========================================
-   LOAD RECENT EVIDENCE
-========================================= */
-
-function loadEvidence(){
-
-    blockchain =
-
-        JSON.parse(
-
-            localStorage.getItem("blockchain")
-
-        ) || [];
-
-    const logsTable =
-        document.getElementById("logsTable");
-
-    if(!logsTable) return;
-
-    logsTable.innerHTML = "";
-
-    blockchain.reverse().forEach(block => {
-
-        logsTable.innerHTML += `
-
-        <tr>
-
-            <td>${block.caseId}</td>
-
-            <td>${block.evidence}</td>
-
-            <td class="success">
-                Verified
-            </td>
-
-            <td>
-                ${block.current_hash.substring(0,12)}...
-            </td>
-
-        </tr>
-
-        `;
-
-    });
 
 }
 
@@ -475,74 +465,64 @@ function loadEvidence(){
 
 function loadAuthorizedEvidence(){
 
-    const evidenceContainer =
-        document.getElementById(
-            "evidenceContainer"
-        );
+    const container =
 
-    if(!evidenceContainer) return;
+    document.getElementById(
 
-    const evidence =
+        "evidenceContainer"
 
-        JSON.parse(
+    );
 
-            localStorage.getItem(
-                "authorizedEvidence"
-            )
+    if(!container) return;
 
-        ) || [];
+    const evidence = JSON.parse(
 
-    evidenceContainer.innerHTML = "";
+        localStorage.getItem(
 
-    if(evidence.length === 0){
+            "authorizedEvidence"
 
-        evidenceContainer.innerHTML =
+        )
 
-        "<h2>No Evidence Found</h2>";
+    ) || [];
 
-        return;
+    console.log(
+        "LOADED EVIDENCE:",
+        evidence
+    );
 
-    }
+    container.innerHTML = "";
 
-    evidence.forEach(block => {
+    evidence.forEach((item)=>{
 
-        evidenceContainer.innerHTML += `
+        container.innerHTML +=
 
-        <div class="block">
+        `
 
-            <h3>
-                Case ID:
-                ${block.caseId}
-            </h3>
+        <div class="evidence-card">
+
+            <h3>Case ID: ${item.case_id}</h3>
 
             <p>
-                <b>Evidence:</b>
-                ${block.evidence}
-            </p>
 
-            <p>
-                <b>Description:</b>
-                ${block.description}
-            </p>
-
-            <p>
                 <b>Officer:</b>
-                ${block.assignedOfficer}
-            </p>
 
-            <p class="hash">
-
-                <b>Previous Hash:</b>
-
-                ${block.previous_hash}
+                ${item.officer_name}
 
             </p>
 
-            <p class="hash">
+            <p>
 
-                <b>Current Hash:</b>
+                <b>Evidence:</b>
 
-                ${block.current_hash}
+                ${item.data}
+
+            </p>
+
+            <p>
+
+                <b>Hash:</b>
+
+                ${item.hash_value}
 
             </p>
 
@@ -554,13 +534,14 @@ function loadAuthorizedEvidence(){
 
 }
 
+
+
+
 /* =========================================
-   INITIAL LOAD
+   AUTO LOAD
 ========================================= */
 
 window.onload = function(){
-
-    /* AUTO FILL OFFICER */
 
     if(document.getElementById("officerName")){
 
@@ -568,10 +549,12 @@ window.onload = function(){
             "officerName"
         ).value =
 
-        localStorage.getItem("username");
+        localStorage.getItem(
+            "username"
+        );
     }
 
-    updateStats();
+    loadStats();
 
     loadEvidence();
 
